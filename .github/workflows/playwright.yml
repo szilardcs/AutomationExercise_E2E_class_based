@@ -1,0 +1,43 @@
+name: Playwright Tests
+on:
+    push:
+        branches: [main, master]
+    pull_request:
+        branches: [main, master]
+jobs:
+    test:
+        env:
+            TEST_USER_NAME: ${{ secrets.TEST_USER_NAME }}
+            TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+            TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+
+            TEST_USER_FIRSTNAME: ${{ secrets.TEST_USER_FIRSTNAME }}
+            TEST_USER_LASTNAME: ${{ secrets.TEST_USER_LASTNAME }}
+            TEST_USER_COMPANY: ${{ secrets.TEST_USER_COMPANY }}
+            TEST_USER_ADDRESS: ${{ secrets.TEST_USER_ADDRESS }}
+            TEST_USER_ADDRESS2: ${{ secrets.TEST_USER_ADDRESS2 }}
+            TEST_USER_COUNTRY: ${{ secrets.TEST_USER_COUNTRY }}
+            TEST_USER_STATE: ${{ secrets.TEST_USER_STATE }}
+            TEST_USER_CITY: ${{ secrets.TEST_USER_CITY }}
+            TEST_USER_ZIPCODE: ${{ secrets.TEST_USER_ZIPCODE }}
+            TEST_USER_MOBILE: ${{ secrets.TEST_USER_MOBILE }}
+
+        timeout-minutes: 60
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: lts/*
+            - name: Install dependencies
+              run: npm ci
+            - name: Install Playwright Browsers
+              run: npx playwright install --with-deps
+            - name: Run Playwright tests
+              run: npx playwright test
+            - uses: actions/upload-artifact@v4
+              if: always()
+              with:
+                  name: playwright-report
+                  path: playwright-report/
+                  retention-days: 30
