@@ -1,6 +1,6 @@
 import { Locator, Page, expect } from "@playwright/test";
-import { BasePage } from "../Base.page";
 import { createContactInfoFaker } from "../../factories/contactUs.factory";
+import { BasePage } from "../Base.page";
 
 export class Checkout extends BasePage {
 	// section wrappers
@@ -28,29 +28,29 @@ export class Checkout extends BasePage {
 		return this.cartInfoWrapper.locator(`#product-${index + 1}`);
 	}
 
-	async verifyDeliveryAddress(addressData: any) {
+	async verifyDeliveryAddress(addressData: any): Promise<void> {
 		const expectedAddress = `Mr. ${addressData.firstName} ${addressData.lastName} ${addressData.company} ${addressData.address} ${addressData.address2} ${addressData.city} ${addressData.state} ${addressData.zipcode} ${addressData.country} ${addressData.mobileNumber}`;
 		await expect(this.deliveryAddressWrapper).toContainText(expectedAddress);
 	}
 
-	async verifyBillingAddress(addressData: any) {
+	async verifyBillingAddress(addressData: any): Promise<void> {
 		const expectedAddress = `Mr. ${addressData.firstName} ${addressData.lastName} ${addressData.company} ${addressData.address} ${addressData.address2} ${addressData.city} ${addressData.state} ${addressData.zipcode} ${addressData.country} ${addressData.mobileNumber}`;
 		await expect(this.billingAddressWrapper).toContainText(expectedAddress);
 	}
 
 	// helper method to get product name
-	private async getProductName(index: number) {
+	private async getProductName(index: number): Promise<string> {
 		const productWrapper = this.rowSelector(index);
-		return await productWrapper.locator(".cart_description").locator("a").textContent();
+		return (await productWrapper.locator(".cart_description").locator("a").textContent()) ?? "Incorrect name";
 	}
 
 	// ========== cart section =============
-	async verifyProductName(index: number, listName: string) {
+	async verifyProductName(index: number, listName: string): Promise<void> {
 		const productName = await this.getProductName(index);
 		expect(listName).toBe(productName);
 	}
 
-	async verifyProductPrice(index: number, listPrice: number) {
+	async verifyProductPrice(index: number, listPrice: number): Promise<number> {
 		const productWrapper = this.rowSelector(index);
 		const productPrice = await productWrapper.locator(".cart_price p").textContent();
 		const priceNumber = productPrice ? parseInt(productPrice.replace(/\D/g, "")) : 0;
@@ -58,14 +58,14 @@ export class Checkout extends BasePage {
 		return priceNumber;
 	}
 
-	async verifyCartTotal(firstProductPrice: number, secondProductPrice: number) {
+	async verifyCartTotal(firstProductPrice: number, secondProductPrice: number): Promise<void> {
 		const totalText = await this.cartTotal.textContent();
 		const expectedNumberTotal = totalText ? parseInt(totalText.replace(/\D/g, "")) : 0;
 		const total = firstProductPrice + secondProductPrice;
 		expect(total).toBe(expectedNumberTotal);
 	}
 
-	async fillCommentAndPlaceOrder() {
+	async fillCommentAndPlaceOrder(): Promise<void> {
 		let content = createContactInfoFaker();
 		await this.commentField.fill(content.subject);
 		await this.placeOrderButton.click();

@@ -1,6 +1,6 @@
 import { Locator, Page, expect } from "@playwright/test";
-import { BasePage } from "../Base.page";
 import { createPaymentInfoFaker } from "../../factories/paymentDetails.factory";
+import { BasePage } from "../Base.page";
 
 export class Payment extends BasePage {
 	protected readonly nameOnCardField: Locator;
@@ -23,7 +23,7 @@ export class Payment extends BasePage {
 		this.successMessage = page.locator("#success_message");
 	}
 
-	async fillPaymentDetails() {
+	async fillPaymentDetails(): Promise<void> {
 		let paymentInfo = createPaymentInfoFaker();
 		await this.nameOnCardField.fill(paymentInfo.nameOnCard);
 		await this.cardNumberField.fill(paymentInfo.cardNumber);
@@ -32,11 +32,11 @@ export class Payment extends BasePage {
 		await this.expirationYearField.fill(paymentInfo.expYear);
 	}
 
-	async clickPayAndConfirmButton() {
+	async clickPayAndConfirmButton(): Promise<void> {
 		await this.payAndConfirmOrderButton.click();
 	}
 
-	async verifySuccessfulOrder() {
+	async verifySuccessfulOrder(): Promise<void> {
 		await expect(this.page).toHaveURL(/payment_done/);
 	}
 }

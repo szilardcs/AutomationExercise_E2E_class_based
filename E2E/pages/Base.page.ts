@@ -1,9 +1,9 @@
-import { Locator, Page, expect } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 
 export abstract class BasePage {
 	constructor(protected readonly page: Page) {}
 
-	protected async goToURL(path: string) {
+	protected async goToURL(path: string): Promise<void> {
 		await this.page.goto(path);
 	}
 

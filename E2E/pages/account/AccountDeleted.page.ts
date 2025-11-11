@@ -11,12 +11,12 @@ export class AccountDeleted extends BasePage {
 		this.continueButton = page.getByRole("link", { name: "Continue" });
 	}
 
-	async verifyDeletedText() {
+	async verifyDeletedText(): Promise<void> {
 		await expect(this.page).toHaveURL("/delete_account");
 		await expect(this.accountDeletedText).toBeVisible();
 	}
 
-	async clickContinueButton() {
+	async clickContinueButton(): Promise<void> {
 		await this.continueButton.click();
 	}
 }

@@ -11,12 +11,12 @@ export class AccountCreated extends BasePage {
 		this.continueButton = page.getByRole("link", { name: "Continue" });
 	}
 
-	async verifyCreatedText() {
+	async verifyCreatedText(): Promise<void> {
 		await expect(this.page).toHaveURL("/account_created");
 		await expect(this.accountCreatedText).toBeVisible();
 	}
 
-	async clickContinueButton() {
+	async clickContinueButton(): Promise<void> {
 		await this.continueButton.click();
 	}
 }

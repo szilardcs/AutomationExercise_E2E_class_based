@@ -23,40 +23,39 @@ export class Header extends BasePage {
 		this.testCasesButton = page.getByRole("link", { name: " Test Cases", exact: true });
 		this.contactUsButton = page.getByRole("link", { name: " Contact Us" });
 	}
-	// act
-	async clickHomePageButton() {
+	async clickHomePageButton(): Promise<void> {
 		await this.homeButton.click();
 	}
 
-	async clickProductButton() {
+	async clickProductButton(): Promise<void> {
 		await this.productsButton.click();
 	}
 
-	async clickCartButton() {
+	async clickCartButton(): Promise<void> {
 		await this.cartButton.click();
 	}
 
-	async clickSignupLoginButton() {
+	async clickSignupLoginButton(): Promise<void> {
 		await this.signUpLoginButton.click();
 	}
 
-	async clickLogoutButton() {
+	async clickLogoutButton(): Promise<void> {
 		await this.logoutButton.click();
 	}
 
-	async clickDeleteAccountButton() {
+	async clickDeleteAccountButton(): Promise<void> {
 		await this.deleteAccountButton.click();
 	}
 
-	async clickTestCasesButton() {
+	async clickTestCasesButton(): Promise<void> {
 		await this.testCasesButton.click();
 	}
 
-	async clickContactUsButton() {
+	async clickContactUsButton(): Promise<void> {
 		await this.contactUsButton.click();
 	}
 
-	async expectLoggedIn(username: string) {
+	async expectLoggedIn(username: string): Promise<void> {
 		await expect(this.page.getByRole("listitem").filter({ hasText: `Logged in as ${username}` })).toBeVisible();
 	}
 }

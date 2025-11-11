@@ -10,7 +10,7 @@ export class TestCases extends BasePage {
 		this.testHeaderText = page.getByRole("heading", { name: "Test Cases", exact: true });
 	}
 
-	async assertHeadingAndPage() {
+	async assertHeadingAndPage(): Promise<void> {
 		await expect(this.testHeaderText).toBeVisible();
 		await expect(this.page).toHaveURL(/test_cases/);
 	}

@@ -1,6 +1,6 @@
 import { Locator, Page, expect } from "@playwright/test";
-import { BasePage } from "./Base.page";
 import { createContactInfoFaker } from "../factories/contactUs.factory";
+import { BasePage } from "./Base.page";
 
 export class HomePage extends BasePage {
 	// subscription
@@ -44,7 +44,7 @@ export class HomePage extends BasePage {
 		});
 	}
 
-	async goToHomePageAndAssert() {
+	async goToHomePageAndAssert(): Promise<void> {
 		await this.page.goto("/");
 		await expect(this.page).toHaveURL("https://automationexercise.com/");
 	}
@@ -55,7 +55,7 @@ export class HomePage extends BasePage {
 	}
 
 	// Products
-	async clickViewProductButton(index: number) {
+	async clickViewProductButton(index: number): Promise<void> {
 		await this.getProductWrapperByIndex(index).getByRole("link", { name: "View Product" }).click();
 	}
 
@@ -73,17 +73,17 @@ export class HomePage extends BasePage {
 		return priceNumber;
 	}
 
-	async clickViewCartButton() {
+	async clickViewCartButton(): Promise<void> {
 		await this.viewCartButton.click();
 	}
 
 	// recommended items section
 
-	async scrollToRecommened() {
+	async scrollToRecommened(): Promise<void> {
 		await this.recommendedWrapper.scrollIntoViewIfNeeded();
 	}
 
-	async verifyRecommendedHeading() {
+	async verifyRecommendedHeading(): Promise<void> {
 		await expect(this.recommendedHeading).toBeVisible();
 	}
 
@@ -105,7 +105,7 @@ export class HomePage extends BasePage {
 		return priceNumber;
 	}
 
-	async addRecommendedItemToCartByIndex(index: number) {
+	async addRecommendedItemToCartByIndex(index: number): Promise<void> {
 		const productId = index + 1;
 		const addToCartButton = this.getActiveItemByIndex(index).locator(`[data-product-id="${productId}"]`);
 		await addToCartButton.scrollIntoViewIfNeeded();
@@ -113,30 +113,30 @@ export class HomePage extends BasePage {
 	}
 
 	// subscription
-	async scrollDownAndVerifyText() {
+	async scrollDownAndVerifyText(): Promise<void> {
 		await this.footer.scrollIntoViewIfNeeded();
 		await expect(this.subscriptionText).toBeVisible();
 	}
 
-	async enterEmailAndSubmit() {
+	async enterEmailAndSubmit(): Promise<void> {
 		const info = createContactInfoFaker();
 		await this.subscriptionEmailField.fill(info.email);
 		await this.subscriptionSubmit.click();
 	}
 
-	async verifySubSuccess() {
+	async verifySubSuccess(): Promise<void> {
 		await expect(this.subscriptionSuccess).toBeVisible();
 	}
 
-	async scrollToTopWithArrow() {
+	async scrollToTopWithArrow(): Promise<void> {
 		await this.scrollToTopArrow.click();
 	}
 
-	async scrollToTop() {
+	async scrollToTop(): Promise<void> {
 		await this.fullFledgedText.scrollIntoViewIfNeeded();
 	}
 
-	async verifyFullFledgedText() {
+	async verifyFullFledgedText(): Promise<void> {
 		await expect(this.fullFledgedText).toBeVisible();
 	}
 }

@@ -1,4 +1,4 @@
-import { DatatypeModule, faker } from "@faker-js/faker";
+import { faker } from "@faker-js/faker";
 
 export function createAccountInfoFaker() {
 	return {
@@ -24,4 +24,17 @@ export function createAddressInfoFaker() {
 		zipcode: faker.location.zipCode(),
 		mobileNumber: faker.phone.number(),
 	};
+}
+
+export interface AddressData {
+	firstName: string;
+	lastName: string;
+	company: string;
+	address: string;
+	address2: string;
+	country: string;
+	state: string;
+	city: string;
+	zipcode: string;
+	mobileNumber: string;
 }

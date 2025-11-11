@@ -12,7 +12,7 @@ export class PaymentDone extends BasePage {
 		this.continueButton = page.getByRole("link", { name: "Continue" });
 	}
 
-	async downloadInvoice() {
+	async downloadInvoice(): Promise<void> {
 		const downloadPromise = this.page.waitForEvent("download");
 		await this.downloadButton.click();
 		const download = await downloadPromise;
@@ -20,7 +20,7 @@ export class PaymentDone extends BasePage {
 		expect(download.suggestedFilename()).toMatch(/\.(pdf|txt|doc|xls)$/i);
 	}
 
-	async clickContinueButton() {
+	async clickContinueButton(): Promise<void> {
 		await this.continueButton.click();
 	}
 }

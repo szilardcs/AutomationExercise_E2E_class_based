@@ -1,6 +1,6 @@
 import { Locator, Page, expect } from "@playwright/test";
-import { BasePage } from "../Base.page";
 import { createAccountInfoFaker } from "../../factories/signup.factory";
+import { BasePage } from "../Base.page";
 
 export const testUserData = {
 	presetUser: {
@@ -58,24 +58,24 @@ export class LoginPage extends BasePage {
 
 	// login
 
-	async assertLoginText() {
+	async assertLoginText(): Promise<void> {
 		await expect(this.loginText).toBeVisible();
 	}
 
-	async fillLoginEmail(email: string = testUserData.presetUser.email) {
+	async fillLoginEmail(email: string = testUserData.presetUser.email): Promise<void> {
 		await this.loginEmail.fill(email);
 	}
 
-	async fillLoginPass(password: string = testUserData.presetUser.password) {
+	async fillLoginPass(password: string = testUserData.presetUser.password): Promise<void> {
 		await this.loginPassword.fill(password);
 	}
 
-	async clickLoginButton() {
+	async clickLoginButton(): Promise<void> {
 		await this.loginButton.click();
 	}
 
 	// leave args empty for correct creds or input your own
-	async loginWithCredentials(email?: string, password?: string) {
+	async loginWithCredentials(email?: string, password?: string): Promise<string> {
 		const usedEmail = email ?? testUserData.presetUser.email;
 		const usedPassword = password ?? testUserData.presetUser.password;
 
@@ -85,38 +85,38 @@ export class LoginPage extends BasePage {
 		return testUserData.presetUser.name;
 	}
 
-	async assertLoginErrorMessage() {
+	async assertLoginErrorMessage(): Promise<void> {
 		await expect(this.incorrectLoginMessage).toBeVisible();
 	}
 
 	// signup
 
-	async assertSignupText() {
+	async assertSignupText(): Promise<void> {
 		await expect(this.signupText).toBeVisible();
 	}
 
 	// returns username for asserting later
-	async fillSignupNameAndReturnIt() {
+	async fillSignupNameAndReturnIt(): Promise<string> {
 		const info = createAccountInfoFaker();
 		await this.signupName.fill(info.name);
 		return info.name;
 	}
 
-	async fillSignupEmail() {
+	async fillSignupEmail(): Promise<void> {
 		const info = createAccountInfoFaker();
 		await this.signupEmail.fill(info.email);
 	}
 
-	async clickSignupButton() {
+	async clickSignupButton(): Promise<void> {
 		await this.signupButton.click();
 	}
 
-	async fillAlreadyUsedCreds() {
+	async fillAlreadyUsedCreds(): Promise<void> {
 		await this.signupName.fill(testUserData.presetUser.name);
 		await this.signupEmail.fill(testUserData.presetUser.email);
 	}
 
-	async assertRegisterErrorMessage() {
+	async assertRegisterErrorMessage(): Promise<void> {
 		await expect(this.incorrectRegisterMessage).toBeVisible();
 	}
 }

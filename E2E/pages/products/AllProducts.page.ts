@@ -72,28 +72,28 @@ export class AllProducts extends BasePage {
 		return priceNumber;
 	}
 
-	async clickViewProductButton(index: number) {
+	async clickViewProductButton(index: number): Promise<void> {
 		await this.getProductWrapperByIndex(index).getByRole("link", { name: "View Product" }).click();
 	}
 
-	async hoverAndClickAddToCart(index: number) {
+	async hoverAndClickAddToCart(index: number): Promise<void> {
 		const productWrapper = this.getProductWrapperByIndex(index);
 		const addToCartButton = productWrapper.locator(`[data-product-id="${index + 1}"]`).nth(1);
 		await productWrapper.hover();
 		await addToCartButton.click();
 	}
 
-	async clickViewCartButton() {
+	async clickViewCartButton(): Promise<void> {
 		await this.viewCartButton.click();
 	}
 
-	async clickContinueShopping() {
+	async clickContinueShopping(): Promise<void> {
 		await this.continueShoppingButton.click();
 	}
 
 	// === category section ===
 
-	async verifyCategoryText() {
+	async verifyCategoryText(): Promise<void> {
 		await expect(this.leftSideBarWrapper.getByRole("heading", { name: "Category" })).toBeVisible();
 	}
 
@@ -114,60 +114,60 @@ export class AllProducts extends BasePage {
 		throw new Error("Invalid category");
 	}
 
-	async verifyCategoryHeading(expectedText: string) {
+	async verifyCategoryHeading(expectedText: string): Promise<void> {
 		const heading = this.page.locator("h2", { hasText: expectedText });
 		await expect(heading).toBeVisible();
 	}
 
-	async clickSubcategoryByNameAndIndex(category: "Women" | "Men" | "Kids", index: number) {
+	async clickSubcategoryByNameAndIndex(category: "Women" | "Men" | "Kids", index: number): Promise<void> {
 		await this.getSubcategoryByIndex(category, index).getByRole("link").click();
 	}
 
-	async clickCategoryWomen() {
+	async clickCategoryWomen(): Promise<void> {
 		await this.categoryWomen.click();
 	}
 
-	async clickCategoryMen() {
+	async clickCategoryMen(): Promise<void> {
 		await this.categoryMen.click();
 	}
 
-	async clickCategoryKids() {
+	async clickCategoryKids(): Promise<void> {
 		await this.categoryKids.click();
 	}
 
 	// brands
 
-	async verifyBrandHeading(expectedText: string) {
+	async verifyBrandHeading(expectedText: string): Promise<void> {
 		const heading = this.page.locator("h2", { hasText: expectedText });
 		await expect(heading).toBeVisible();
 	}
 
-	async verifyBrandsSidebar() {
+	async verifyBrandsSidebar(): Promise<void> {
 		await expect(this.brandHeading).toBeVisible();
 	}
 
-	async clickOnBrandByIndex(index: number) {
+	async clickOnBrandByIndex(index: number): Promise<void> {
 		const brand = this.getBrandByIndex(index);
 		await brand.getByRole("link").click();
 	}
 
 	// assertions
 
-	async verifyProductPage() {
+	async verifyProductPage(): Promise<void> {
 		await expect(this.page).toHaveURL(/products/);
 	}
 
-	async verifyProductList() {
+	async verifyProductList(): Promise<void> {
 		await expect(this.productsList).toBeVisible();
 	}
 
-	async searchProduct(searchQuery: string) {
+	async searchProduct(searchQuery: string): Promise<void> {
 		await this.productSearchField.fill(searchQuery);
 		await this.productSearchButton.click();
 		await expect(this.searchedHeading).toBeVisible();
 	}
 
-	async verifySearchedProduct(searchQuery: string) {
+	async verifySearchedProduct(searchQuery: string): Promise<void> {
 		await expect(this.getProductWrapperByIndex(0).locator("p").first()).toContainText(searchQuery);
 	}
 }

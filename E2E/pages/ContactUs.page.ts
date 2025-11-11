@@ -1,6 +1,6 @@
 import { Locator, Page, expect } from "@playwright/test";
-import { BasePage } from "./Base.page";
 import { createContactInfoFaker } from "../factories/contactUs.factory";
+import { BasePage } from "./Base.page";
 
 export class ContactUs extends BasePage {
 	protected readonly getInTouchText: Locator;
@@ -26,17 +26,17 @@ export class ContactUs extends BasePage {
 		this.homeButton = page.locator(".btn-success");
 	}
 
-	async assertPageAndText() {
+	async assertPageAndText(): Promise<void> {
 		await expect(this.page).toHaveURL(/contact_us/);
 		await expect(this.getInTouchText).toBeVisible();
 	}
 
-	async uploadFile() {
+	async uploadFile(): Promise<void> {
 		const filePath = "E2E/assets/test-image.png";
 		await this.fileInput.setInputFiles(filePath);
 	}
 
-	async submitAndHandlePopup() {
+	async submitAndHandlePopup(): Promise<void> {
 		// hard waits necesarry here, would be flaky otherwise
 		await this.page.waitForTimeout(1000);
 		this.page.on("dialog", (dialog) => {
@@ -46,7 +46,7 @@ export class ContactUs extends BasePage {
 		await this.page.waitForTimeout(1000);
 	}
 
-	async fillContactFields() {
+	async fillContactFields(): Promise<void> {
 		const contactInfo = createContactInfoFaker();
 		await this.nameField.fill(contactInfo.name);
 		await this.emailField.fill(contactInfo.email);
@@ -54,12 +54,12 @@ export class ContactUs extends BasePage {
 		await this.messageField.fill(contactInfo.message);
 	}
 
-	async clickHomeButtonAndAssertHome() {
+	async clickHomeButtonAndAssertHome(): Promise<void> {
 		await this.homeButton.click();
 		await expect(this.page).toHaveURL("https://automationexercise.com/");
 	}
 
-	async assertSuccessMessage() {
+	async assertSuccessMessage(): Promise<void> {
 		await expect(this.successMessage).toBeVisible();
 	}
 }

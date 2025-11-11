@@ -1,3 +1,4 @@
+import type { AddressData } from "../factories/signup.factory";
 import { test } from "../fixtures/pomManager.fixture";
 import { testUserData } from "../pages/account/Login.page";
 
@@ -10,7 +11,7 @@ test.describe("Checkout flows", async () => {
 		let firstProduct: { listName: string; listPrice: number };
 		let secondProduct: { listName: string; listPrice: number };
 		let username: string;
-		let addressData: any;
+		let addressData: AddressData;
 
 		await test.step("Add products to cart and try to checkout without logged in user", async () => {
 			await pomManager.header.clickProductButton();
@@ -83,7 +84,7 @@ test.describe("Checkout flows", async () => {
 		let firstProduct: { listName: string; listPrice: number };
 		let secondProduct: { listName: string; listPrice: number };
 		let username: string;
-		let addressData: any;
+		let addressData: AddressData;
 
 		await test.step("Register new user account", async () => {
 			await pomManager.header.clickSignupLoginButton();
@@ -206,7 +207,7 @@ test.describe("Checkout flows", async () => {
 
 	test("Test Case 23: Verify address details in checkout page", async ({ pomManager }) => {
 		let username: string;
-		let addressData: any;
+		let addressData: AddressData;
 
 		await test.step("Register new user account", async () => {
 			await pomManager.header.clickSignupLoginButton();
@@ -245,7 +246,7 @@ test.describe("Checkout flows", async () => {
 
 	test("Test Case 24: Download Invoice after purchase order", async ({ pomManager }) => {
 		let username: string;
-		let addressData: any;
+		let addressData: AddressData;
 
 		await test.step("Add product to cart and initiate checkout as guest", async () => {
 			await pomManager.header.clickProductButton();

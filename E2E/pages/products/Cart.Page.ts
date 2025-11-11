@@ -1,6 +1,6 @@
 import { Locator, Page, expect } from "@playwright/test";
-import { BasePage } from "../Base.page";
 import { createContactInfoFaker } from "../../factories/contactUs.factory";
+import { BasePage } from "../Base.page";
 
 export class Cart extends BasePage {
 	// checkout button
@@ -41,30 +41,30 @@ export class Cart extends BasePage {
 	}
 
 	// helper method to get product name
-	private async getProductName(index: number) {
+	private async getProductName(index: number): Promise<string> {
 		const productWrapper = this.rowSelector(index);
-		return await productWrapper.locator(".cart_description").locator("h4 a").textContent();
+		return (await productWrapper.locator(".cart_description").locator("h4 a").textContent()) ?? "Incorrect name";
 	}
 
-	async verifyPage() {
+	async verifyPage(): Promise<void> {
 		await expect(this.page).toHaveURL(/view_cart/);
 	}
 
-	async clickCheckoutButton() {
+	async clickCheckoutButton(): Promise<void> {
 		await this.proceedToCheckoutButton.click();
 	}
 
-	async clickRegisterLogin() {
+	async clickRegisterLogin(): Promise<void> {
 		await this.registerLoginButton.click();
 	}
 
-	// ========== cart section =============
-	async verifyProductName(index: number, listName: string) {
+	// === Cart section ===
+	async verifyProductName(index: number, listName: string): Promise<void> {
 		const productName = await this.getProductName(index);
 		expect(listName).toBe(productName);
 	}
 
-	async verifyProductPrice(index: number, listPrice: number) {
+	async verifyProductPrice(index: number, listPrice: number): Promise<number> {
 		const productWrapper = this.rowSelector(index);
 		const productPrice = await productWrapper.locator(".cart_price p").textContent();
 		const priceNumber = productPrice ? parseInt(productPrice.replace(/\D/g, "")) : 0;
@@ -82,7 +82,7 @@ export class Cart extends BasePage {
 	}
 
 	// calculates totalPrice based on productPrice and productQuantity and asserts
-	async verifyProductTotal(index: number, productPrice: number, productQuantity: number) {
+	async verifyProductTotal(index: number, productPrice: number, productQuantity: number): Promise<void> {
 		const totalPrice = productPrice * productQuantity;
 		const productWrapper = this.rowSelector(index);
 		const productTotal = await productWrapper.locator(".cart_total p").textContent();
@@ -90,39 +90,39 @@ export class Cart extends BasePage {
 		expect(totalPrice).toBe(priceNumber);
 	}
 
-	async removeProductFromCart(index: number) {
+	async removeProductFromCart(index: number): Promise<void> {
 		const productWrapper = this.rowSelector(index);
 		const deleteButton = productWrapper.locator(".cart_delete").locator(".cart_quantity_delete");
 		await deleteButton.hover();
 		await deleteButton.click();
 	}
 
-	async verifyProductInCart(index: number) {
+	async verifyProductInCart(index: number): Promise<void> {
 		const productName = await this.getProductName(index);
 		expect(productName).toBeTruthy();
 	}
 
-	async expectEmptyCart() {
+	async expectEmptyCart(): Promise<void> {
 		await expect(this.emptyCartMessage).toBeVisible();
 	}
 
 	// ========= subscription section ============
-	async scrollDownAndVerifyText() {
+	async scrollDownAndVerifyText(): Promise<void> {
 		await this.footer.scrollIntoViewIfNeeded();
 		await expect(this.subscriptionText).toBeVisible();
 	}
 
-	async enterEmailAndSubmit() {
+	async enterEmailAndSubmit(): Promise<void> {
 		const info = createContactInfoFaker();
 		await this.subscriptionEmailField.fill(info.email);
 		await this.subscriptionSubmit.click();
 	}
 
-	async verifySubSuccess() {
+	async verifySubSuccess(): Promise<void> {
 		await expect(this.subscriptionSuccess).toBeVisible();
 	}
 
-	async clearCartViaAPI() {
+	async clearCartViaAPI(): Promise<void> {
 		await this.page.request.get("delete_cart/1");
 		await this.page.request.get("delete_cart/2");
 	}

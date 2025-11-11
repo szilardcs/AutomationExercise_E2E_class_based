@@ -1,6 +1,6 @@
 import { Locator, Page, expect } from "@playwright/test";
-import { BasePage } from "../Base.page";
 import { createContactInfoFaker } from "../../factories/contactUs.factory";
+import { BasePage } from "../Base.page";
 
 export class ProductDetails extends BasePage {
 	// product info
@@ -56,7 +56,7 @@ export class ProductDetails extends BasePage {
 	}
 
 	// helper method to compare names and prices
-	private async compareNameAndPrice(productNameFromList: string, productPriceFromList: number) {
+	private async compareNameAndPrice(productNameFromList: string, productPriceFromList: number): Promise<void> {
 		const productName = await this.productName.textContent();
 		const productPrice = await this.productPrice.textContent();
 
@@ -66,12 +66,12 @@ export class ProductDetails extends BasePage {
 		expect(productPriceFromList).toBe(rawDetailsPrice);
 	}
 
-	async verifyPage() {
+	async verifyPage(): Promise<void> {
 		await expect(this.page).toHaveURL(/product_details/);
 	}
 
 	// details assertions
-	async verifyProductDetails(productNameFromList: string, productPriceFromList: number) {
+	async verifyProductDetails(productNameFromList: string, productPriceFromList: number): Promise<void> {
 		await expect(this.page).toHaveURL(/product_details/);
 		await expect(this.productName).toBeVisible();
 		await expect(this.productCategory).toBeVisible();
@@ -83,20 +83,20 @@ export class ProductDetails extends BasePage {
 		await this.compareNameAndPrice(productNameFromList, productPriceFromList);
 	}
 
-	async addProductToCart() {
+	async addProductToCart(): Promise<void> {
 		await this.addToCartButton.click();
 	}
 
-	async setProductQuantity(quantity: number) {
+	async setProductQuantity(quantity: number): Promise<void> {
 		await this.productQuantity.fill(quantity.toString());
 	}
 
-	async clickViewCartButton() {
+	async clickViewCartButton(): Promise<void> {
 		await this.viewCartButton.click();
 	}
 
 	// fill and submit review section
-	async fillAndSubmitReview() {
+	async fillAndSubmitReview(): Promise<void> {
 		const reviewInfo = createContactInfoFaker();
 		await this.reviewNameField.fill(reviewInfo.name);
 		await this.reviewEmailField.fill(reviewInfo.email);
@@ -104,11 +104,11 @@ export class ProductDetails extends BasePage {
 		await this.reviewSubmitButton.click();
 	}
 
-	async verifyWriteYourReviewText() {
+	async verifyWriteYourReviewText(): Promise<void> {
 		await expect(this.reviewTextHeading).toBeVisible();
 	}
 
-	async verifySuccessMessage() {
+	async verifySuccessMessage(): Promise<void> {
 		await expect(this.reviewSuccessMessage).toBeVisible();
 	}
 }
