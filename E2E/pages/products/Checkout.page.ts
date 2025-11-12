@@ -24,8 +24,8 @@ export class Checkout extends BasePage {
 	}
 
 	// helper method to find product row
-	private rowSelector(index: number): Locator {
-		return this.cartInfoWrapper.locator(`#product-${index + 1}`);
+	private rowSelector(productName: string): Locator {
+		return this.cartInfoWrapper.getByRole("row").filter({ hasText: `${productName}` });
 	}
 
 	async verifyDeliveryAddress(addressData: any): Promise<void> {
@@ -38,20 +38,20 @@ export class Checkout extends BasePage {
 		await expect(this.billingAddressWrapper).toContainText(expectedAddress);
 	}
 
-	// helper method to get product name
-	private async getProductName(index: number): Promise<string> {
-		const productWrapper = this.rowSelector(index);
+	//helper method to get product name
+	private async getProductName(productName: string): Promise<string> {
+		const productWrapper = this.rowSelector(productName);
 		return (await productWrapper.locator(".cart_description").locator("a").textContent()) ?? "Incorrect name";
 	}
 
 	// ========== cart section =============
-	async verifyProductName(index: number, listName: string): Promise<void> {
-		const productName = await this.getProductName(index);
-		expect(listName).toBe(productName);
+	async verifyProductName(listName: string): Promise<void> {
+		const productName = await this.getProductName(listName);
+		expect(listName.toLowerCase()).toBe(productName.toLowerCase());
 	}
 
-	async verifyProductPrice(index: number, listPrice: number): Promise<number> {
-		const productWrapper = this.rowSelector(index);
+	async verifyProductPrice(productName: string, listPrice: number): Promise<number> {
+		const productWrapper = this.rowSelector(productName);
 		const productPrice = await productWrapper.locator(".cart_price p").textContent();
 		const priceNumber = productPrice ? parseInt(productPrice.replace(/\D/g, "")) : 0;
 		expect(listPrice).toBe(priceNumber);

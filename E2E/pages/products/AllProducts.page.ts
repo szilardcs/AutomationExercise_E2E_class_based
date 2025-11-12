@@ -53,33 +53,26 @@ export class AllProducts extends BasePage {
 		this.kidsWrapper = this.categoryWrapper.locator("#Kids");
 	}
 
-	// Helper method to get productWrapper by index
-	private getProductWrapperByIndex(index: number): Locator {
-		return this.productsList.locator(".col-sm-4").nth(index);
+	// helper method to get product wrapper by product name
+	private getProductWrapperByName(productName: string): Locator {
+		return this.productsList.locator(".col-sm-4").filter({ hasText: `${productName}` });
 	}
 
-	// Method to get product name
-	async getProductNameFromlist(index: number): Promise<string> {
-		const productWrapper = this.getProductWrapperByIndex(index);
-		const productName = await productWrapper.locator("p").first().textContent();
-		return productName || "";
-	}
-
-	async getProductPriceFromList(index: number): Promise<number> {
-		const productWrapper = this.getProductWrapperByIndex(index);
+	async getProductPriceFromList(productName: string): Promise<number> {
+		const productWrapper = this.getProductWrapperByName(productName);
 		const productPrice = await productWrapper.locator("h2").first().textContent();
 		const priceNumber = productPrice ? parseInt(productPrice.replace(/\D/g, "")) : 0;
 		return priceNumber;
 	}
 
-	async clickViewProductButton(index: number): Promise<void> {
-		await this.getProductWrapperByIndex(index).getByRole("link", { name: "View Product" }).click();
+	async clickViewProductButton(productName: string): Promise<void> {
+		await this.getProductWrapperByName(productName).getByRole("link", { name: "View Product" }).click();
 	}
 
-	async hoverAndClickAddToCart(index: number): Promise<void> {
-		const productWrapper = this.getProductWrapperByIndex(index);
-		const addToCartButton = productWrapper.locator(`[data-product-id="${index + 1}"]`).nth(1);
-		await productWrapper.hover();
+	async clickAddToCartByName(productName: string): Promise<void> {
+		const productWrapper = this.getProductWrapperByName(productName);
+		const addToCartButton = productWrapper.locator(".add-to-cart").first();
+		// await addToCartButton.hover();
 		await addToCartButton.click();
 	}
 
@@ -91,25 +84,25 @@ export class AllProducts extends BasePage {
 		await this.continueShoppingButton.click();
 	}
 
-	// === category section ===
+	// === Category section ===
 
 	async verifyCategoryText(): Promise<void> {
 		await expect(this.leftSideBarWrapper.getByRole("heading", { name: "Category" })).toBeVisible();
 	}
 
-	// helper method to get brand by index
-	private getBrandByIndex(index: number): Locator {
-		return this.brandWrapper.getByRole("listitem").nth(index);
+	// helper method to get brand by name
+	private getBrandByName(brandName: string): Locator {
+		return this.brandWrapper.getByRole("link", { name: `${brandName}` });
 	}
 
-	// helper method to get subcategory by index
-	private getSubcategoryByIndex(category: "Women" | "Men" | "Kids", index: number): Locator {
+	// helper method to get subcategory by name
+	private getSubcategoryByNames(category: "Women" | "Men" | "Kids", subcategoryName: string): Locator {
 		if (category === "Women") {
-			return this.womenWrapper.getByRole("listitem").nth(index);
+			return this.womenWrapper.getByRole("link", { name: `${subcategoryName}` });
 		} else if (category === "Men") {
-			return this.menWrapper.getByRole("listitem").nth(index);
+			return this.menWrapper.getByRole("link", { name: `${subcategoryName}` });
 		} else if (category === "Kids") {
-			return this.kidsWrapper.getByRole("listitem").nth(index);
+			return this.kidsWrapper.getByRole("link", { name: `${subcategoryName}` });
 		}
 		throw new Error("Invalid category");
 	}
@@ -119,8 +112,8 @@ export class AllProducts extends BasePage {
 		await expect(heading).toBeVisible();
 	}
 
-	async clickSubcategoryByNameAndIndex(category: "Women" | "Men" | "Kids", index: number): Promise<void> {
-		await this.getSubcategoryByIndex(category, index).getByRole("link").click();
+	async clickSubcategoryByNames(category: "Women" | "Men" | "Kids", subcategoryName: string): Promise<void> {
+		await this.getSubcategoryByNames(category, subcategoryName).click();
 	}
 
 	async clickCategoryWomen(): Promise<void> {
@@ -146,9 +139,9 @@ export class AllProducts extends BasePage {
 		await expect(this.brandHeading).toBeVisible();
 	}
 
-	async clickOnBrandByIndex(index: number): Promise<void> {
-		const brand = this.getBrandByIndex(index);
-		await brand.getByRole("link").click();
+	async clickOnBrandByName(brandName: string): Promise<void> {
+		const brand = this.getBrandByName(brandName);
+		await brand.click();
 	}
 
 	// assertions
@@ -168,6 +161,6 @@ export class AllProducts extends BasePage {
 	}
 
 	async verifySearchedProduct(searchQuery: string): Promise<void> {
-		await expect(this.getProductWrapperByIndex(0).locator("p").first()).toContainText(searchQuery);
+		await expect(this.getProductWrapperByName(searchQuery)).toBeVisible();
 	}
 }

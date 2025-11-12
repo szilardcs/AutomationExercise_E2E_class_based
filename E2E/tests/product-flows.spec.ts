@@ -6,7 +6,7 @@ test.describe("Product flows", async () => {
 	});
 
 	test("Test Case 8: Verify All Products and product detail page", async ({ pomManager }) => {
-		let productName: string;
+		const productName = "Blue Top";
 		let productPrice: number;
 
 		await test.step("Navigate to products page and verify", async () => {
@@ -16,9 +16,8 @@ test.describe("Product flows", async () => {
 		});
 
 		await test.step("Get first product details and navigate to details page", async () => {
-			productName = await pomManager.allProducts.getProductNameFromlist(0);
-			productPrice = await pomManager.allProducts.getProductPriceFromList(0);
-			await pomManager.allProducts.clickViewProductButton(0);
+			productPrice = await pomManager.allProducts.getProductPriceFromList(productName);
+			await pomManager.allProducts.clickViewProductButton(productName);
 		});
 
 		await test.step("Verify product details page and consistency", async () => {
@@ -42,62 +41,57 @@ test.describe("Product flows", async () => {
 	});
 
 	test("Test Case 12: Add Products in Cart", async ({ pomManager }) => {
-		let firstProduct: { listName: string; listPrice: number; quantity?: number };
-		let secondProduct: { listName: string; listPrice: number; quantity?: number };
+		const firstProductName = "Blue Top";
+		const secondProductName = "Men TShirt";
+		let firstProductPrice: number;
+		let secondProductPrice: number;
+
+		let firstProductQuantity: number = 4;
+		let secondProductQuantity: number = 3;
 
 		await test.step("Navigate to products page", async () => {
 			await pomManager.header.clickProductButton();
 		});
 
 		await test.step("Add first product to cart and continue shopping", async () => {
-			// First product, 0 is index on list
-			await pomManager.allProducts.hoverAndClickAddToCart(0);
-			firstProduct = {
-				listName: await pomManager.allProducts.getProductNameFromlist(0),
-				listPrice: await pomManager.allProducts.getProductPriceFromList(0),
-			};
+			firstProductPrice = await pomManager.allProducts.getProductPriceFromList(firstProductName);
+			await pomManager.allProducts.clickAddToCartByName(firstProductName);
 			await pomManager.allProducts.clickContinueShopping();
 		});
 
 		await test.step("Add second product to cart and view cart", async () => {
-			// Second product, 1 is index on list
-			await pomManager.allProducts.hoverAndClickAddToCart(1);
-			secondProduct = {
-				listName: await pomManager.allProducts.getProductNameFromlist(1),
-				listPrice: await pomManager.allProducts.getProductPriceFromList(1),
-			};
+			secondProductPrice = await pomManager.allProducts.getProductPriceFromList(secondProductName);
+			await pomManager.allProducts.clickAddToCartByName(secondProductName);
 			await pomManager.allProducts.clickViewCartButton();
 		});
 
 		await test.step("Verify cart contents and calculations", async () => {
 			// Verify products exist in cart
-			await pomManager.cart.verifyProductInCart(0);
-			await pomManager.cart.verifyProductInCart(1);
+			await pomManager.cart.verifyProductInCart(firstProductName);
+			await pomManager.cart.verifyProductInCart(secondProductName);
 
 			// First product verification
-			await pomManager.cart.verifyProductPrice(0, firstProduct.listPrice);
-			await pomManager.cart.verifyProductName(0, firstProduct.listName);
-			firstProduct.quantity = await pomManager.cart.verifyProductQuantity(0, 1); // index, expected quantity
-			await pomManager.cart.verifyProductTotal(0, firstProduct.listPrice, firstProduct.quantity);
+			await pomManager.cart.verifyProductName(firstProductName);
+			await pomManager.cart.verifyProductPrice(firstProductName, firstProductPrice);
+			firstProductQuantity = await pomManager.cart.verifyProductQuantity(firstProductName, 1); // number is expected quantity
+			await pomManager.cart.verifyProductTotal(firstProductName, firstProductPrice, firstProductQuantity);
 
 			// Second product verification
-			await pomManager.cart.verifyProductPrice(1, secondProduct.listPrice);
-			await pomManager.cart.verifyProductName(1, secondProduct.listName);
-			secondProduct.quantity = await pomManager.cart.verifyProductQuantity(1, 1); // index, expected quantity
-			await pomManager.cart.verifyProductTotal(1, secondProduct.listPrice, secondProduct.quantity);
+			await pomManager.cart.verifyProductName(secondProductName);
+			await pomManager.cart.verifyProductPrice(secondProductName, secondProductPrice);
+			secondProductQuantity = await pomManager.cart.verifyProductQuantity(secondProductName, 1); // number is expected quantity
+			await pomManager.cart.verifyProductTotal(secondProductName, secondProductPrice, secondProductQuantity);
 		});
 	});
 
 	test("Test Case 13: Verify Product quantity in Cart", async ({ pomManager }) => {
+		const productName = "Blue Top";
+		let productPrice: number;
 		let productQuantity: number = 4;
-		let productDetails: { productName: string; productPrice: number };
 
 		await test.step("Navigate to product details and set quantity", async () => {
-			productDetails = {
-				productName: await pomManager.home.getProductNameFromlist(0),
-				productPrice: await pomManager.home.getProductPriceFromList(0),
-			};
-			await pomManager.home.clickViewProductButton(0);
+			productPrice = await pomManager.allProducts.getProductPriceFromList(productName);
+			await pomManager.home.clickViewProductButton(productName);
 			await pomManager.productDetails.verifyPage();
 			await pomManager.productDetails.setProductQuantity(productQuantity);
 		});
@@ -108,28 +102,31 @@ test.describe("Product flows", async () => {
 		});
 
 		await test.step("Verify product quantity and total in cart", async () => {
-			await pomManager.cart.verifyProductQuantity(0, productQuantity);
-			await pomManager.cart.verifyProductTotal(0, productDetails.productPrice, productQuantity);
+			await pomManager.cart.verifyProductQuantity(productName, productQuantity);
+			await pomManager.cart.verifyProductTotal(productName, productPrice, productQuantity);
 		});
 	});
 
 	test("Test Case 17: Remove Products From Cart", async ({ pomManager }) => {
+		const firstProductName = "Blue Top";
+		const secondProductName = "Men TShirt";
+
 		await test.step("Add products to cart and navigate to cart page", async () => {
 			await pomManager.header.clickProductButton();
 
-			// First product, 0 is index in list
-			await pomManager.allProducts.hoverAndClickAddToCart(0);
+			// First product
+			await pomManager.allProducts.clickAddToCartByName(firstProductName);
 			await pomManager.allProducts.clickContinueShopping();
 
 			// Second product
-			await pomManager.allProducts.hoverAndClickAddToCart(1);
+			await pomManager.allProducts.clickAddToCartByName(secondProductName);
 			await pomManager.allProducts.clickViewCartButton();
 			await pomManager.cart.verifyPage();
 		});
 
 		await test.step("Remove products and verify empty cart", async () => {
-			await pomManager.cart.removeProductFromCart(0);
-			await pomManager.cart.removeProductFromCart(1);
+			await pomManager.cart.removeProductFromCart(firstProductName);
+			await pomManager.cart.removeProductFromCart(secondProductName);
 			await pomManager.cart.expectEmptyCart();
 		});
 	});
@@ -142,17 +139,13 @@ test.describe("Product flows", async () => {
 
 		await test.step("Test Women category subcategories", async () => {
 			await pomManager.allProducts.clickCategoryWomen();
-
-			// "Women" is category, 1 is index of subcategory
-			await pomManager.allProducts.clickSubcategoryByNameAndIndex("Women", 1);
+			await pomManager.allProducts.clickSubcategoryByNames("Women", "TOPS");
 			await pomManager.allProducts.verifyCategoryHeading("WOMEN - TOPS PRODUCTS");
 		});
 
 		await test.step("Test Men category subcategories", async () => {
 			await pomManager.allProducts.clickCategoryMen();
-
-			// "Men" is category, 0 is index of subcategory
-			await pomManager.allProducts.clickSubcategoryByNameAndIndex("Men", 0);
+			await pomManager.allProducts.clickSubcategoryByNames("Men", "TSHIRTS");
 			await pomManager.allProducts.verifyCategoryHeading("Men - Tshirts Products");
 		});
 	});
@@ -165,17 +158,18 @@ test.describe("Product flows", async () => {
 
 		await test.step("Test multiple brand navigation", async () => {
 			// First brand
-			await pomManager.allProducts.clickOnBrandByIndex(0);
+			await pomManager.allProducts.clickOnBrandByName("POLO");
 			await pomManager.allProducts.verifyBrandHeading("Polo");
 
 			// Second brand
-			await pomManager.allProducts.clickOnBrandByIndex(1);
+			await pomManager.allProducts.clickOnBrandByName("H&M");
 			await pomManager.allProducts.verifyBrandHeading("H&M");
 		});
 	});
 
 	test("Test Case 20: Search Products and Verify Cart After Login", async ({ pomManager }) => {
-		let product: { listName: string; listPrice: number };
+		const productName = "Blue Top";
+		let productPrice: number;
 
 		await test.step("Search for product and add to cart", async () => {
 			await pomManager.header.clickProductButton();
@@ -183,18 +177,16 @@ test.describe("Product flows", async () => {
 			await pomManager.allProducts.searchProduct("Blue Top");
 			await pomManager.allProducts.verifySearchedProduct("Blue Top");
 
-			product = {
-				listName: await pomManager.allProducts.getProductNameFromlist(0),
-				listPrice: await pomManager.allProducts.getProductPriceFromList(0),
-			};
-			await pomManager.allProducts.hoverAndClickAddToCart(0);
+			await pomManager.allProducts.clickAddToCartByName(productName);
+			productPrice = await pomManager.allProducts.getProductPriceFromList(productName);
+
 			await pomManager.allProducts.clickViewCartButton();
 		});
 
 		await test.step("Verify product in cart before login", async () => {
-			await pomManager.cart.verifyProductInCart(0);
-			await pomManager.checkout.verifyProductName(0, product.listName);
-			await pomManager.checkout.verifyProductPrice(0, product.listPrice);
+			await pomManager.cart.verifyProductInCart(productName);
+			await pomManager.checkout.verifyProductName(productName);
+			await pomManager.checkout.verifyProductPrice(productName, productPrice);
 		});
 
 		await test.step("Login and verify cart persistence", async () => {
@@ -202,17 +194,19 @@ test.describe("Product flows", async () => {
 			await pomManager.login.loginWithCredentials();
 			await pomManager.header.clickCartButton();
 
-			await pomManager.cart.verifyProductInCart(0);
-			await pomManager.checkout.verifyProductName(0, product.listName);
-			await pomManager.checkout.verifyProductPrice(0, product.listPrice);
+			await pomManager.cart.verifyProductInCart(productName);
+			await pomManager.checkout.verifyProductName(productName);
+			await pomManager.checkout.verifyProductPrice(productName, productPrice);
 		});
 	});
 
 	test("Test Case 21: Add review on product", async ({ pomManager }) => {
+		const productName = "Blue Top";
+
 		await test.step("Navigate to product details page", async () => {
 			await pomManager.header.clickProductButton();
 			await pomManager.allProducts.verifyProductPage();
-			await pomManager.allProducts.clickViewProductButton(0);
+			await pomManager.allProducts.clickViewProductButton(productName);
 		});
 
 		await test.step("Submit product review", async () => {
@@ -223,24 +217,22 @@ test.describe("Product flows", async () => {
 	});
 
 	test("Test Case 22: Add to cart from Recommended items", async ({ pomManager }) => {
-		let product: { recommendedName: string; recommendedPrice: number };
+		const productName = "Blue Top";
+		let productPrice: number;
 
 		await test.step("Add recommended product to cart", async () => {
 			await pomManager.home.scrollToRecommened();
 			await pomManager.home.verifyRecommendedHeading();
 
-			product = {
-				recommendedName: await pomManager.home.getProductNameFromRecommended(0),
-				recommendedPrice: await pomManager.home.getProductPriceFromRecommended(0),
-			};
-			await pomManager.home.addRecommendedItemToCartByIndex(0);
+			productPrice = await pomManager.home.getProductPriceFromRecommended(productName);
+			await pomManager.home.addRecommendedItemToCartByName(productName);
 			await pomManager.home.clickViewCartButton();
 		});
 
 		await test.step("Verify product details in cart", async () => {
-			await pomManager.cart.verifyProductName(0, product.recommendedName);
-			await pomManager.cart.verifyProductPrice(0, product.recommendedPrice);
-			await pomManager.cart.verifyProductInCart(0);
+			await pomManager.cart.verifyProductInCart(productName);
+			await pomManager.cart.verifyProductName(productName);
+			await pomManager.cart.verifyProductPrice(productName, productPrice);
 		});
 	});
 });

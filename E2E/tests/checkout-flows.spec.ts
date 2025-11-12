@@ -8,28 +8,24 @@ test.describe("Checkout flows", async () => {
 	});
 
 	test("Test Case 14: Place Order: Register during Checkout", async ({ pomManager }) => {
-		let firstProduct: { listName: string; listPrice: number };
-		let secondProduct: { listName: string; listPrice: number };
+		const firstProductName = "Blue Top";
+		const secondProductName = "Men TShirt";
+		let firstProductPrice: number;
+		let secondProductPrice: number;
 		let username: string;
 		let addressData: AddressData;
 
 		await test.step("Add products to cart and try to checkout without logged in user", async () => {
 			await pomManager.header.clickProductButton();
 
-			// First product, 0 is index in the list
-			firstProduct = {
-				listName: await pomManager.allProducts.getProductNameFromlist(0),
-				listPrice: await pomManager.allProducts.getProductPriceFromList(0),
-			};
-			await pomManager.allProducts.hoverAndClickAddToCart(0);
+			// First product
+			firstProductPrice = await pomManager.allProducts.getProductPriceFromList(firstProductName);
+			await pomManager.allProducts.clickAddToCartByName(firstProductName);
 			await pomManager.allProducts.clickContinueShopping();
 
 			// Second product
-			secondProduct = {
-				listName: await pomManager.allProducts.getProductNameFromlist(1),
-				listPrice: await pomManager.allProducts.getProductPriceFromList(1),
-			};
-			await pomManager.allProducts.hoverAndClickAddToCart(1);
+			secondProductPrice = await pomManager.allProducts.getProductPriceFromList(secondProductName);
+			await pomManager.allProducts.clickAddToCartByName(secondProductName);
 			await pomManager.allProducts.clickViewCartButton();
 
 			await pomManager.cart.verifyPage();
@@ -59,14 +55,14 @@ test.describe("Checkout flows", async () => {
 			await pomManager.checkout.verifyDeliveryAddress(addressData);
 			await pomManager.checkout.verifyBillingAddress(addressData);
 
-			// First product, 0 is index in cart
-			await pomManager.checkout.verifyProductName(0, firstProduct.listName);
-			await pomManager.checkout.verifyProductPrice(0, firstProduct.listPrice);
+			// First product
+			await pomManager.checkout.verifyProductName(firstProductName);
+			await pomManager.checkout.verifyProductPrice(firstProductName, firstProductPrice);
 
 			// Second product
-			await pomManager.checkout.verifyProductName(1, secondProduct.listName);
-			await pomManager.checkout.verifyProductPrice(1, secondProduct.listPrice);
-			await pomManager.checkout.verifyCartTotal(firstProduct.listPrice, secondProduct.listPrice);
+			await pomManager.checkout.verifyProductName(secondProductName);
+			await pomManager.checkout.verifyProductPrice(secondProductName, secondProductPrice);
+			await pomManager.checkout.verifyCartTotal(firstProductPrice, secondProductPrice);
 		});
 
 		await test.step("Complete payment and cleanup", async () => {
@@ -81,8 +77,10 @@ test.describe("Checkout flows", async () => {
 	});
 
 	test("Test Case 15: Place Order: Register before Checkout", async ({ pomManager }) => {
-		let firstProduct: { listName: string; listPrice: number };
-		let secondProduct: { listName: string; listPrice: number };
+		const firstProductName = "Blue Top";
+		const secondProductName = "Men TShirt";
+		let firstProductPrice: number;
+		let secondProductPrice: number;
 		let username: string;
 		let addressData: AddressData;
 
@@ -104,21 +102,16 @@ test.describe("Checkout flows", async () => {
 		await test.step("Add products to cart and proceed to checkout", async () => {
 			await pomManager.header.clickProductButton();
 
-			// First product, 0 is index in the list
-			firstProduct = {
-				listName: await pomManager.allProducts.getProductNameFromlist(0),
-				listPrice: await pomManager.allProducts.getProductPriceFromList(0),
-			};
-			await pomManager.allProducts.hoverAndClickAddToCart(0);
+			// First product
+			firstProductPrice = await pomManager.allProducts.getProductPriceFromList(firstProductName);
+			await pomManager.allProducts.clickAddToCartByName(firstProductName);
 			await pomManager.allProducts.clickContinueShopping();
 
 			// Second product
-			secondProduct = {
-				listName: await pomManager.allProducts.getProductNameFromlist(1),
-				listPrice: await pomManager.allProducts.getProductPriceFromList(1),
-			};
-			await pomManager.allProducts.hoverAndClickAddToCart(1);
+			secondProductPrice = await pomManager.allProducts.getProductPriceFromList(secondProductName);
+			await pomManager.allProducts.clickAddToCartByName(secondProductName);
 			await pomManager.allProducts.clickViewCartButton();
+
 			await pomManager.cart.verifyPage();
 			await pomManager.cart.clickCheckoutButton();
 		});
@@ -127,14 +120,14 @@ test.describe("Checkout flows", async () => {
 			await pomManager.checkout.verifyBillingAddress(addressData);
 			await pomManager.checkout.verifyDeliveryAddress(addressData);
 
-			// First product, 0 is index in the cart
-			await pomManager.checkout.verifyProductName(0, firstProduct.listName);
-			await pomManager.checkout.verifyProductPrice(0, firstProduct.listPrice);
+			// First product
+			await pomManager.checkout.verifyProductName(firstProductName);
+			await pomManager.checkout.verifyProductPrice(firstProductName, firstProductPrice);
 
 			// Second product
-			await pomManager.checkout.verifyProductName(1, secondProduct.listName);
-			await pomManager.checkout.verifyProductPrice(1, secondProduct.listPrice);
-			await pomManager.checkout.verifyCartTotal(firstProduct.listPrice, secondProduct.listPrice);
+			await pomManager.checkout.verifyProductName(secondProductName);
+			await pomManager.checkout.verifyProductPrice(secondProductName, secondProductPrice);
+			await pomManager.checkout.verifyCartTotal(firstProductPrice, secondProductPrice);
 		});
 
 		await test.step("Complete payment and cleanup", async () => {
@@ -149,8 +142,12 @@ test.describe("Checkout flows", async () => {
 	});
 
 	test("Test Case 16: Place Order: Login before Checkout", async ({ pomManager }) => {
-		let firstProduct: { listName: string; listPrice: number };
-		let secondProduct: { listName: string; listPrice: number };
+		const firstProductName = "Blue Top";
+		const secondProductName = "Men TShirt";
+		let firstProductPrice: number;
+		let secondProductPrice: number;
+		let username: string;
+		let addressData: AddressData;
 
 		await test.step("Login with existing user credentials", async () => {
 			await pomManager.header.clickSignupLoginButton();
@@ -162,21 +159,16 @@ test.describe("Checkout flows", async () => {
 		await test.step("Add products to cart and proceed to checkout", async () => {
 			await pomManager.header.clickProductButton();
 
-			// First product, 0 is index in the list
-			firstProduct = {
-				listName: await pomManager.allProducts.getProductNameFromlist(0),
-				listPrice: await pomManager.allProducts.getProductPriceFromList(0),
-			};
-			await pomManager.allProducts.hoverAndClickAddToCart(0);
+			// First product
+			firstProductPrice = await pomManager.allProducts.getProductPriceFromList(firstProductName);
+			await pomManager.allProducts.clickAddToCartByName(firstProductName);
 			await pomManager.allProducts.clickContinueShopping();
 
 			// Second product
-			secondProduct = {
-				listName: await pomManager.allProducts.getProductNameFromlist(1),
-				listPrice: await pomManager.allProducts.getProductPriceFromList(1),
-			};
-			await pomManager.allProducts.hoverAndClickAddToCart(1);
+			secondProductPrice = await pomManager.allProducts.getProductPriceFromList(secondProductName);
+			await pomManager.allProducts.clickAddToCartByName(secondProductName);
 			await pomManager.allProducts.clickViewCartButton();
+
 			await pomManager.cart.verifyPage();
 			await pomManager.cart.clickCheckoutButton();
 		});
@@ -185,14 +177,14 @@ test.describe("Checkout flows", async () => {
 			await pomManager.checkout.verifyBillingAddress(testUserData.presetUser.addressData);
 			await pomManager.checkout.verifyDeliveryAddress(testUserData.presetUser.addressData);
 
-			// First product, 0 is index in the cart
-			await pomManager.checkout.verifyProductName(0, firstProduct.listName);
-			await pomManager.checkout.verifyProductPrice(0, firstProduct.listPrice);
+			// First product
+			await pomManager.checkout.verifyProductName(firstProductName);
+			await pomManager.checkout.verifyProductPrice(firstProductName, firstProductPrice);
 
 			// Second product
-			await pomManager.checkout.verifyProductName(1, secondProduct.listName);
-			await pomManager.checkout.verifyProductPrice(1, secondProduct.listPrice);
-			await pomManager.checkout.verifyCartTotal(firstProduct.listPrice, secondProduct.listPrice);
+			await pomManager.checkout.verifyProductName(secondProductName);
+			await pomManager.checkout.verifyProductPrice(secondProductName, secondProductPrice);
+			await pomManager.checkout.verifyCartTotal(firstProductPrice, secondProductPrice);
 		});
 
 		await test.step("Complete payment process", async () => {
@@ -206,6 +198,7 @@ test.describe("Checkout flows", async () => {
 	});
 
 	test("Test Case 23: Verify address details in checkout page", async ({ pomManager }) => {
+		const firstProductName = "Blue Top";
 		let username: string;
 		let addressData: AddressData;
 
@@ -226,7 +219,7 @@ test.describe("Checkout flows", async () => {
 
 		await test.step("Add product to cart and proceed to checkout", async () => {
 			await pomManager.header.clickProductButton();
-			await pomManager.allProducts.hoverAndClickAddToCart(0);
+			await pomManager.allProducts.clickAddToCartByName(firstProductName);
 			await pomManager.allProducts.clickViewCartButton();
 			await pomManager.cart.verifyPage();
 			await pomManager.cart.clickCheckoutButton();
@@ -245,14 +238,14 @@ test.describe("Checkout flows", async () => {
 	});
 
 	test("Test Case 24: Download Invoice after purchase order", async ({ pomManager }) => {
+		const firstProductName = "Blue Top";
 		let username: string;
 		let addressData: AddressData;
 
 		await test.step("Add product to cart and initiate checkout as guest", async () => {
 			await pomManager.header.clickProductButton();
 
-			// 0 is index of first product on the list
-			await pomManager.allProducts.hoverAndClickAddToCart(0);
+			await pomManager.allProducts.clickAddToCartByName(firstProductName);
 			await pomManager.allProducts.clickViewCartButton();
 			await pomManager.cart.verifyPage();
 			await pomManager.cart.clickCheckoutButton();

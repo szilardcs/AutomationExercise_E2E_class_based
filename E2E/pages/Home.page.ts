@@ -49,25 +49,18 @@ export class HomePage extends BasePage {
 		await expect(this.page).toHaveURL("https://automationexercise.com/");
 	}
 
-	// Helper method to get productWrapper by index
-	private getProductWrapperByIndex(index: number): Locator {
-		return this.productsList.locator(".col-sm-4").nth(index);
+	// helper method to get product wrapper by product name
+	private getProductWrapperByName(productName: string): Locator {
+		return this.productsList.locator(".col-sm-4").filter({ hasText: `${productName}` });
 	}
 
 	// Products
-	async clickViewProductButton(index: number): Promise<void> {
-		await this.getProductWrapperByIndex(index).getByRole("link", { name: "View Product" }).click();
+	async clickViewProductButton(productName: string): Promise<void> {
+		await this.getProductWrapperByName(productName).getByRole("link", { name: "View Product" }).click();
 	}
 
-	// Method to get product name
-	async getProductNameFromlist(index: number): Promise<string> {
-		const productWrapper = this.getProductWrapperByIndex(index);
-		const productName = await productWrapper.locator("p").first().textContent();
-		return productName || "";
-	}
-
-	async getProductPriceFromList(index: number): Promise<number> {
-		const productWrapper = this.getProductWrapperByIndex(index);
+	async getProductPriceFromList(productName: string): Promise<number> {
+		const productWrapper = this.getProductWrapperByName(productName);
 		const productPrice = await productWrapper.locator("h2").first().textContent();
 		const priceNumber = productPrice ? parseInt(productPrice.replace(/\D/g, "")) : 0;
 		return priceNumber;
@@ -87,28 +80,20 @@ export class HomePage extends BasePage {
 		await expect(this.recommendedHeading).toBeVisible();
 	}
 
-	// helper method to get active item by index
-	private getActiveItemByIndex(index: number): Locator {
-		return this.recommendedCarouselWrapper.locator(".single-products").nth(index);
+	// helper method to get active item by name
+	private getActiveItemByName(productName: string): Locator {
+		return this.recommendedCarouselWrapper.locator(".single-products").filter({ hasText: `${productName}` });
 	}
 
-	async getProductNameFromRecommended(index: number): Promise<string> {
-		const productWrapper = this.getActiveItemByIndex(index);
-		const productName = await productWrapper.locator("p").first().textContent();
-		return productName || "";
-	}
-
-	async getProductPriceFromRecommended(index: number): Promise<number> {
-		const productWrapper = this.getActiveItemByIndex(index);
+	async getProductPriceFromRecommended(productName: string): Promise<number> {
+		const productWrapper = this.getActiveItemByName(productName);
 		const productPrice = await productWrapper.locator("h2").first().textContent();
 		const priceNumber = productPrice ? parseInt(productPrice.replace(/\D/g, "")) : 0;
 		return priceNumber;
 	}
 
-	async addRecommendedItemToCartByIndex(index: number): Promise<void> {
-		const productId = index + 1;
-		const addToCartButton = this.getActiveItemByIndex(index).locator(`[data-product-id="${productId}"]`);
-		await addToCartButton.scrollIntoViewIfNeeded();
+	async addRecommendedItemToCartByName(productName: string): Promise<void> {
+		const addToCartButton = this.getActiveItemByName(productName).locator(".add-to-cart");
 		await addToCartButton.click();
 	}
 
