@@ -15,7 +15,7 @@
 
 ```bash
 # 1 Clone & install
-git clone https://github.com/alexusadays/Playwright-POM-TS.git
+git clone https://github.com/szilardcs/AutomationExercise_E2E_class_based.git
 cd Playwright-POM-TS
 npm ci            # Node 18 + recommended
 
@@ -33,4 +33,5 @@ E2E/
 ├── pages/ # Class-based Page Objects
 └── tests/ # 26 test cases across features
 ```
+
 
