@@ -1,14 +1,15 @@
 # E-Commerce Test Automation with Playwright & TypeScript for the AutomationExerxise website
 
-![Playwright Tests](https://github.com/szilardcs/AutomationExercise_E2E_class_based/blob/main/.github/workflows/playwright.yml/badge.svg)
+![Playwright Tests](https://github.com/szilardcs/AutomationExercise_E2E_class_based/actions/workflows/playwright.yml/badge.svg)
 
-## Automated test suite for e-commerce workflows using Page Object Model pattern that runs on every push.
+## Automated test suite for e-commerce workflows using Page Object Model pattern.
 
 -   **Page Object Model** architecture for maintainable tests
 -   **Custom pomManager fixture** for clean imports and readability
 -   **Faker factories** for realistic test data generation
 -   **Complex user journeys**: registration, cart management, checkout flows
 -   **TypeScript** for type-safe test development
+-   **CI/CD pipeline** running tests on every push
 
 ## Quick Start
 
@@ -29,6 +30,7 @@ npx playwright test --ui
 npx playwright tests/checkout.spec.ts
 ```
 
+```
 # Project Structure
 
 E2E/
@@ -37,7 +39,4 @@ E2E/
 ├── fixtures/ # pomManager and test setup
 ├── pages/ # Class-based Page Objects
 └── tests/ # 26 test cases across features
-
-```
-
 ```
