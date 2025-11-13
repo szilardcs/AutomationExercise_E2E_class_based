@@ -1,4 +1,4 @@
-# E-Commerce Test Automation with Playwright & TypeScript for the AutomationExerxise website
+# E-Commerce Test Automation with Playwright & TypeScript for the AutomationExercise website
 
 ![Playwright Tests](https://github.com/szilardcs/AutomationExercise_E2E_class_based/actions/workflows/playwright.yml/badge.svg)
 
@@ -14,20 +14,13 @@
 ## Quick Start
 
 ```bash
-# Install dependencies
-npm install
+# 1 Clone & install
+git clone https://github.com/alexusadays/Playwright-POM-TS.git
+cd Playwright-POM-TS
+npm ci            # Node 18 + recommended
 
-# Install Playwright browsers
-npx playwright install
-
-# Run all tests
+# 2 Run the tests
 npx playwright test
-
-# Run with UI mode
-npx playwright test --ui
-
-# Run specific test file
-npx playwright tests/checkout.spec.ts
 ```
 
 ```
@@ -40,3 +33,4 @@ E2E/
 ├── pages/ # Class-based Page Objects
 └── tests/ # 26 test cases across features
 ```
+
